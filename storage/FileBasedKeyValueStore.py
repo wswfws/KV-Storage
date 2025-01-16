@@ -1,6 +1,6 @@
 import json
 
-from server_config import ServerConfig
+from config import ServerConfig
 
 
 class FileBasedKeyValueStore:

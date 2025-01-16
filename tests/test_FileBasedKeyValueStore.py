@@ -3,7 +3,7 @@ import json
 
 import pytest
 
-from server_config import ServerConfig
+from config import ServerConfig
 from storage.FileBasedKeyValueStore import FileBasedKeyValueStore
 
 

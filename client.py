@@ -1,22 +1,18 @@
 import asyncio
-import hashlib
 
 from aiogram.client.session import aiohttp
 from aiohttp import ClientResponse
 
-server_adrrs = ["http://localhost:8000", "http://localhost:8001"]
+from config import ClientConfig
 
-user = {
-    "user_id": "1",
-    "password_hash": hashlib.sha256("password".encode()).hexdigest()
-}
+
 
 
 async def add_value(key, value):
     async with aiohttp.ClientSession() as session:
         tasks = []
-        for server_adrr in server_adrrs:
-            json = {"key": key, "value": value, "user": user, "finish_value": True}
+        for server_adrr in ClientConfig.SERVER_ADRRS:
+            json = {"key": key, "value": value, "user": ClientConfig.USER, "finish_value": True}
             task = asyncio.create_task(session.post(server_adrr + "/add_value", json=json))
             tasks.append(task)
         results = await asyncio.gather(*tasks, return_exceptions=True)
@@ -31,8 +27,8 @@ async def add_value(key, value):
 async def add_value_part(key, value) -> (bool,):
     async with aiohttp.ClientSession() as session:
         tasks = []
-        for server_adrr in server_adrrs:
-            json = {"key": key, "value": value, "user": user, "finish_value": False, }
+        for server_adrr in ClientConfig.SERVER_ADRRS:
+            json = {"key": key, "value": value, "user": ClientConfig.USER, "finish_value": False, }
             task = asyncio.create_task(session.post(server_adrr + "/add_value", json=json))
             tasks.append(task)
         results = await asyncio.gather(*tasks, return_exceptions=True)
@@ -49,7 +45,7 @@ async def sync_values(servers, key, values):
         async with aiohttp.ClientSession() as session:
             tasks = []
             for server_adrr in servers:
-                json = {"key": key, "user": user}
+                json = {"key": key, "user": ClientConfig.USER}
                 task = asyncio.create_task(session.post(server_adrr + "/clear_key", json=json))
                 tasks.append(task)
             results = await asyncio.gather(*tasks, return_exceptions=True)
@@ -60,7 +56,7 @@ async def sync_values(servers, key, values):
                     return False
             tasks = []
             for server_adrr in servers:
-                json = {"key": key, "value": value, "user": user, "finish_value": True}
+                json = {"key": key, "value": value, "user": ClientConfig.USER, "finish_value": True}
                 task = asyncio.create_task(session.post(server_adrr + "/add_value", json=json))
                 tasks.append(task)
             results = await asyncio.gather(*tasks, return_exceptions=True)
@@ -76,8 +72,8 @@ async def get_value(key) -> (bool, str,):
     values = []
     async with aiohttp.ClientSession() as session:
         tasks = []
-        for server_adrr in server_adrrs:
-            json = {"key": key, "user": user}
+        for server_adrr in ClientConfig.SERVER_ADRRS:
+            json = {"key": key, "user": ClientConfig.USER}
             task = asyncio.create_task(session.post(server_adrr + "/get_value", json=json))
             tasks.append(task)
         results: list[ClientResponse] = await asyncio.gather(*tasks, return_exceptions=True)
@@ -88,7 +84,7 @@ async def get_value(key) -> (bool, str,):
                 return False
             values.append((result.url, (await result.json())["value"]))
 
-    main_server = server_adrrs[0]
+    main_server = ClientConfig.SERVER_ADRRS[0]
     correct_value = values[0][0]
 
     for val in values:
@@ -103,8 +99,8 @@ async def get_value(key) -> (bool, str,):
 async def clear_key(key) -> (bool,):
     async with aiohttp.ClientSession() as session:
         tasks = []
-        for server_adrr in server_adrrs:
-            json = {"key": key, "user": user}
+        for server_adrr in ClientConfig.SERVER_ADRRS:
+            json = {"key": key, "user": ClientConfig.USER}
             task = asyncio.create_task(session.post(server_adrr + "/clear_key", json=json))
             tasks.append(task)
         results = await asyncio.gather(*tasks, return_exceptions=True)
@@ -135,11 +131,11 @@ async def main():
 
     print(f"{'sync_data':_^30}")
     print(await clear_key("key"))  # True
-    global server_adrrs
-    _servers = server_adrrs.copy()
-    server_adrrs = [server_adrrs[0]]
+
+    _servers = ClientConfig.SERVER_ADRRS.copy()
+    ClientConfig.SERVER_ADRRS = [ClientConfig.SERVER_ADRRS[0]]
     print(await add_value("key", "value"))  # True
-    server_adrrs = _servers
+    ClientConfig.SERVER_ADRRS = _servers
     print(await get_value("key"))  # ["value"]
 
 
