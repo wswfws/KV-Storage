@@ -11,6 +11,10 @@ class ServerConfig:
         {
             "user_id": "2",
             "password_hash": hashlib.sha256("password2".encode()).hexdigest()
+        },
+        {
+            "user_id": "test_user_id",
+            "password_hash": hashlib.sha256("test_password_hash".encode()).hexdigest()
         }
     ]
 

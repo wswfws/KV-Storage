@@ -1,7 +1,6 @@
 import asyncio
 
-from aiogram.client.session import aiohttp
-from aiohttp import ClientResponse
+from aiohttp import ClientResponse, ClientSession
 
 from config import ClientConfig
 
@@ -9,7 +8,7 @@ from config import ClientConfig
 
 
 async def add_value(key, value):
-    async with aiohttp.ClientSession() as session:
+    async with ClientSession() as session:
         tasks = []
         for server_adrr in ClientConfig.SERVER_ADRRS:
             json = {"key": key, "value": value, "user": ClientConfig.USER, "finish_value": True}
@@ -25,7 +24,7 @@ async def add_value(key, value):
 
 
 async def add_value_part(key, value) -> (bool,):
-    async with aiohttp.ClientSession() as session:
+    async with ClientSession() as session:
         tasks = []
         for server_adrr in ClientConfig.SERVER_ADRRS:
             json = {"key": key, "value": value, "user": ClientConfig.USER, "finish_value": False, }
@@ -42,7 +41,7 @@ async def add_value_part(key, value) -> (bool,):
 
 async def sync_values(servers, key, values):
     for value in values:
-        async with aiohttp.ClientSession() as session:
+        async with ClientSession() as session:
             tasks = []
             for server_adrr in servers:
                 json = {"key": key, "user": ClientConfig.USER}
@@ -70,7 +69,7 @@ async def sync_values(servers, key, values):
 
 async def get_value(key) -> (bool, str,):
     values = []
-    async with aiohttp.ClientSession() as session:
+    async with ClientSession() as session:
         tasks = []
         for server_adrr in ClientConfig.SERVER_ADRRS:
             json = {"key": key, "user": ClientConfig.USER}
@@ -97,7 +96,7 @@ async def get_value(key) -> (bool, str,):
 
 
 async def clear_key(key) -> (bool,):
-    async with aiohttp.ClientSession() as session:
+    async with ClientSession() as session:
         tasks = []
         for server_adrr in ClientConfig.SERVER_ADRRS:
             json = {"key": key, "user": ClientConfig.USER}

@@ -75,10 +75,13 @@ def clear_key(body: ClearKeyRequestBody):
     return {"status": "OK"}
 
 
-if __name__ == '__main__':
-    port = int(sys.argv[1]) if len(sys.argv) > 1 else 8000
-
+def start_server(port):
     if port != 8000:
         ServerConfig.STORAGE_PATH += f"{port}\\"
 
     uvicorn.run(app, host="localhost", port=port)
+
+
+if __name__ == '__main__':
+    port = int(sys.argv[1]) if len(sys.argv) > 1 else 8000
+    start_server(port)

@@ -8,15 +8,10 @@ from storage.FileBasedKeyValueStore import FileBasedKeyValueStore
 
 
 class TestFileBasedKeyValueStore:
-    user = {
-        "user_id": "1",
-        "password_hash": hashlib.sha256("password".encode()).hexdigest()
-    }
 
     # Initialize store with default filename and verify empty store creation
     def test_init_creates_empty_store(self, mocker):
         # Mock file operations
-        mock_open = mocker.patch('builtins.open', mocker.mock_open())
         mock_json_load = mocker.patch('json.load')
         mock_json_load.side_effect = FileNotFoundError()
 

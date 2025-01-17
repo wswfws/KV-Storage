@@ -3,6 +3,7 @@ import pytest
 from Models.User import UserModel, convert_user_model_to_user
 from server import get_value, GetValueRequestBody, buffer_store
 from storage.FileBasedKeyValueStore import FileBasedKeyValueStore
+from tests.start_test import test_user
 
 
 class TestGetValue:
@@ -11,8 +12,7 @@ class TestGetValue:
     def setup_method(self):
         """Clear the buffer and storage before each test."""
         buffer_store.clear()
-        user = UserModel(user_id="test_user", password_hash="a" * 64)
-        store = FileBasedKeyValueStore(convert_user_model_to_user(user).get_user_filename())
+        store = FileBasedKeyValueStore(convert_user_model_to_user(test_user).get_user_filename())
         store.store.clear()
         store._save_data()
 
@@ -21,7 +21,6 @@ class TestGetValue:
         # Arrange
         test_key = "test_key"
         test_value = ["test_value"]
-        test_user = UserModel(user_id="test_user", password_hash="a" * 64)
 
         mock_store = mocker.Mock()
         mock_store.get.return_value = test_value
@@ -41,7 +40,6 @@ class TestGetValue:
     def test_get_value_returns_none_for_missing_key(self, mocker):
         # Arrange
         test_key = "nonexistent_key"
-        test_user = UserModel(user_id="test_user", password_hash="a" * 64)
 
         mock_store = mocker.Mock()
         mock_store.get.return_value = None
