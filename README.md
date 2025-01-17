@@ -1,6 +1,8 @@
 # KV-Storage
 
-**KV-Storage** — это распределённое хранилище данных типа «ключ-значение», предоставляющее высокую надёжность, масштабируемость и удобство работы. Система подходит для сценариев, где требуется надёжное хранение данных, репликация, а также работа с большими объёмами информации.
+**KV-Storage** — это распределённое хранилище данных типа «ключ-значение», предоставляющее высокую надёжность,
+масштабируемость и удобство работы. Система подходит для сценариев, где требуется надёжное хранение данных, репликация,
+а также работа с большими объёмами информации.
 
 ---
 
@@ -38,18 +40,148 @@
 
 ---
 
+# CLI Documentation for Key-Value System
+
+This document describes how to use the Command-Line Interface (CLI) for interacting with the key-value system. The CLI
+allows you to perform operations such as adding, retrieving, and clearing key-value pairs.
+
+## Commands
+
+### 1. `clear_key`
+
+Clears the specified key from the system.
+
+**Usage:**
+
+```bash
+python cli_interface.py clear_key <key>
+```
+
+**Arguments:**
+
+- `<key>`: The key to clear.
+
+**Example:**
+
+```bash
+python cli_interface.py clear_key my_key
+```
+
+### 2. `add_value`
+
+Adds a value to a specified key.
+
+**Usage:**
+
+```bash
+python cli_interface.py add_value <key> <value>
+```
+
+**Arguments:**
+
+- `<key>`: The key to which the value should be added.
+- `<value>`: The value to add.
+
+**Example:**
+
+```bash
+python cli_interface.py add_value my_key my_value
+```
+
+### 3. `add_value_part`
+
+Adds a partial value to a specified key. This operation is useful when constructing a value incrementally.
+
+**Usage:**
+
+```bash
+python cli_interface.py add_value_part <key> <value>
+```
+
+**Arguments:**
+
+- `<key>`: The key to which the partial value should be added.
+- `<value>`: The partial value to add.
+
+**Example:**
+
+```bash
+python cli_interface.py add_value_part my_key partial_value
+```
+
+### 4. `get_value`
+
+Retrieves the value associated with a specified key.
+
+**Usage:**
+
+```bash
+python cli_interface.py get_value <key>
+```
+
+**Arguments:**
+
+- `<key>`: The key whose value should be retrieved.
+
+**Example:**
+
+```bash
+python cli_interface.py get_value my_key
+```
+
+## Installation
+
+Ensure you have Python installed on your system and the required dependencies for your module. Import necessary
+functions from your key-value module.
+
+## Running the CLI
+
+To run the CLI, execute the script `cli_interface.py` with the desired command and arguments. Each command is designed
+to handle a specific operation.
+
+## Examples
+
+### Add a value to a key
+
+```bash
+python cli_interface.py add_value test_key test_value
+```
+
+### Retrieve the value of a key
+
+```bash
+python cli_interface.py get_value test_key
+```
+
+### Clear a key
+
+```bash
+python cli_interface.py clear_key test_key
+```
+
+### Add a partial value to a key
+
+```bash
+python cli_interface.py add_value_part test_key part_value
+```
+
+---
+
 ## API
 
 ### `POST /add_value`
+
 Добавление значения в хранилище.
 
 **Параметры:**
+
 - `key` (строка) — ключ.
 - `value` (строка) — значение.
 - `finish_value` (логическое) — завершён ли ввод значения.
 - `user` (объект) — информация о пользователе.
 
 **Пример запроса:**
+
 ```json
 {
   "key": "example",
@@ -65,13 +197,16 @@
 ---
 
 ### `POST /get_value`
+
 Получение значения из хранилища.
 
 **Параметры:**
+
 - `key` (строка) — ключ.
 - `user` (объект) — информация о пользователе.
 
 **Пример запроса:**
+
 ```json
 {
   "key": "example",
@@ -83,23 +218,29 @@
 ```
 
 **Пример ответа:**
+
 ```json
 {
   "key": "example",
-  "value": ["some data"]
+  "value": [
+    "some data"
+  ]
 }
 ```
 
 ---
 
 ### `POST /clear_key`
+
 Удаление значения по ключу.
 
 **Параметры:**
+
 - `key` (строка) — ключ.
 - `user` (объект) — информация о пользователе.
 
 **Пример запроса:**
+
 ```json
 {
   "key": "example",
@@ -114,11 +255,8 @@
 
 ## Тестирование
 
-- Запуск автоматических тестов:
-  ```bash
-  pytest tests/
-  ```
-- Убедитесь, что все узлы и экземпляры хранилища работают корректно перед началом тестов.
+- Запуск автоматических тестов для локального тестирования:
+  ```tests/start_test.py```
 
 ---
 
@@ -127,6 +265,7 @@
 ```python
 import asyncio
 from client import add_value, get_value, clear_key
+
 
 async def main():
     # Добавление значения
@@ -138,6 +277,7 @@ async def main():
 
     # Очистка ключа
     await clear_key("key")
+
 
 asyncio.run(main())
 ```
